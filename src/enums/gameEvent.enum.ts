@@ -1,0 +1,7 @@
+export enum GameEventEnum {
+  SELECT_MODE = "SELECT_MODE",
+  MAKE_MOVE = "MAKE_MOVE",
+  AI_MOVE = "AI_MOVE",
+  CHECK_WINNER = "CHECK_WINNER",
+  RESET = "RESET",
+}
