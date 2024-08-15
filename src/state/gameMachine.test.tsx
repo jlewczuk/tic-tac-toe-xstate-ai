@@ -28,10 +28,37 @@ describe("gameMachine", () => {
     });
 
     service.send({
-      type: GameEventEnum.SELECT_MODE,
+      type: GameEventEnum.SELECT_MODE_AND_SIZE,
       mode: GameModeEnum.Player,
+      size: 3,
     });
     service.send({ type: GameEventEnum.MAKE_MOVE, index: 0 });
+  });
+
+  test("transitions to draw when the board is full and no winner is detected", (done) => {
+    (minimaxHelpers.checkWinner as jest.Mock).mockReturnValue(null);
+
+    service.subscribe((state: any) => {
+      if (state.matches(StatesEnum.DRAW)) {
+        expect(state.value).toBe(StatesEnum.DRAW);
+        done();
+      }
+    });
+
+    service.send({
+      type: GameEventEnum.SELECT_MODE_AND_SIZE,
+      mode: GameModeEnum.Player,
+      size: 3,
+    });
+    service.send({ type: GameEventEnum.MAKE_MOVE, index: 0 });
+    service.send({ type: GameEventEnum.MAKE_MOVE, index: 1 });
+    service.send({ type: GameEventEnum.MAKE_MOVE, index: 2 });
+    service.send({ type: GameEventEnum.MAKE_MOVE, index: 3 });
+    service.send({ type: GameEventEnum.MAKE_MOVE, index: 4 });
+    service.send({ type: GameEventEnum.MAKE_MOVE, index: 5 });
+    service.send({ type: GameEventEnum.MAKE_MOVE, index: 6 });
+    service.send({ type: GameEventEnum.MAKE_MOVE, index: 7 });
+    service.send({ type: GameEventEnum.MAKE_MOVE, index: 8 });
   });
 
   test("resets the game to initial state", (done) => {
@@ -39,13 +66,15 @@ describe("gameMachine", () => {
       if (state.matches(StatesEnum.MODE_SELECTION)) {
         expect(state.context.board).toEqual(Array(9).fill(null));
         expect(state.context.currentPlayer).toBe(PlayerEnum.X);
+        expect(state.context.mode).toBe(GameModeEnum.Player);
         done();
       }
     });
 
     service.send({
-      type: GameEventEnum.SELECT_MODE,
+      type: GameEventEnum.SELECT_MODE_AND_SIZE,
       mode: GameModeEnum.Player,
+      size: 3,
     });
     service.send({ type: GameEventEnum.MAKE_MOVE, index: 0 });
     service.send({ type: GameEventEnum.RESET });

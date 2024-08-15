@@ -1,8 +1,8 @@
 import { EventObject } from "xstate";
-import { GameEventEnum, GameModeEnum } from "../enums";
+import { GameEventEnum, GameModeEnum } from "@/enums";
 
 export type GameEvent =
-  | SelectModeEvent
+  | SelectModeAndSizeEvent
   | MakeMoveEvent
   | AiMoveEvent
   | CheckWinnerEvent
@@ -13,9 +13,10 @@ export interface MakeMoveEvent extends EventObject {
   index: number;
 }
 
-export interface SelectModeEvent extends EventObject {
-  type: GameEventEnum.SELECT_MODE;
-  mode: GameModeEnum.Player | GameModeEnum.AI;
+export interface SelectModeAndSizeEvent extends EventObject {
+  type: GameEventEnum.SELECT_MODE_AND_SIZE;
+  mode: GameModeEnum;
+  size: number;
 }
 
 export interface AiMoveEvent extends EventObject {

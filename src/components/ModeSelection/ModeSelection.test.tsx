@@ -3,28 +3,42 @@ import { ModeSelection } from "./ModeSelection";
 import { GameModeEnum } from "@/enums";
 import "@testing-library/jest-dom";
 
-const mockOnSelectMode = jest.fn();
+const mockOnSelectModeAndSize = jest.fn();
 
 describe("ModeSelection Component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  test("renders buttons correctly", () => {
-    render(<ModeSelection onSelectMode={mockOnSelectMode} />);
+  test("renders mode selection options correctly", () => {
+    render(<ModeSelection onSelectModeAndSize={mockOnSelectModeAndSize} />);
     expect(screen.getByText("Play with a Friend")).toBeInTheDocument();
     expect(screen.getByText("Play against AI")).toBeInTheDocument();
   });
 
-  test("calls onSelectMode with Player mode when 'Play with a Friend' is clicked", () => {
-    render(<ModeSelection onSelectMode={mockOnSelectMode} />);
-    fireEvent.click(screen.getByText("Play with a Friend"));
-    expect(mockOnSelectMode).toHaveBeenCalledWith(GameModeEnum.Player);
+  test("renders board size options correctly", () => {
+    render(<ModeSelection onSelectModeAndSize={mockOnSelectModeAndSize} />);
+    expect(screen.getByLabelText("3x3")).toBeInTheDocument();
+    expect(screen.getByLabelText("4x4")).toBeInTheDocument();
+    expect(screen.getByLabelText("5x5")).toBeInTheDocument();
   });
 
-  test("calls onSelectMode with AI mode when 'Play against AI' is clicked", () => {
-    render(<ModeSelection onSelectMode={mockOnSelectMode} />);
-    fireEvent.click(screen.getByText("Play against AI"));
-    expect(mockOnSelectMode).toHaveBeenCalledWith(GameModeEnum.AI);
+  test("calls onSelectModeAndSize with correct mode and size when 'Play with a Friend' is selected and Start Game is clicked", () => {
+    render(<ModeSelection onSelectModeAndSize={mockOnSelectModeAndSize} />);
+    fireEvent.click(screen.getByLabelText("Play with a Friend"));
+    fireEvent.click(screen.getByLabelText("3x3"));
+    fireEvent.click(screen.getByText("Start Game"));
+    expect(mockOnSelectModeAndSize).toHaveBeenCalledWith(
+      GameModeEnum.Player,
+      3,
+    );
+  });
+
+  test("calls onSelectModeAndSize with correct mode and size when 'Play against AI' is selected and Start Game is clicked", () => {
+    render(<ModeSelection onSelectModeAndSize={mockOnSelectModeAndSize} />);
+    fireEvent.click(screen.getByLabelText("Play against AI"));
+    fireEvent.click(screen.getByLabelText("4x4"));
+    fireEvent.click(screen.getByText("Start Game"));
+    expect(mockOnSelectModeAndSize).toHaveBeenCalledWith(GameModeEnum.AI, 4);
   });
 });

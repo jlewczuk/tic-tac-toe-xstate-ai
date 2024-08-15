@@ -46,7 +46,7 @@ describe("Tic-Tac-Toe AI Functions", () => {
   });
 
   describe("checkWinner", () => {
-    it("should return the winner if there is one", () => {
+    it("should return the winner if there is one on a 3x3 board", () => {
       const board = [
         PlayerEnum.X,
         PlayerEnum.X,
@@ -58,10 +58,10 @@ describe("Tic-Tac-Toe AI Functions", () => {
         null,
         null,
       ];
-      expect(checkWinner(board)).toBe(PlayerEnum.X);
+      expect(checkWinner(board, 3)).toBe(PlayerEnum.X);
     });
 
-    it("should return null if there is no winner", () => {
+    it("should return null if there is no winner on a 3x3 board", () => {
       const board = [
         PlayerEnum.X,
         PlayerEnum.O,
@@ -73,17 +73,101 @@ describe("Tic-Tac-Toe AI Functions", () => {
         PlayerEnum.X,
         PlayerEnum.O,
       ];
-      expect(checkWinner(board)).toBeNull();
+      expect(checkWinner(board, 3)).toBeNull();
     });
 
-    it("should return null for an empty board", () => {
+    it("should return null for an empty board on a 3x3 board", () => {
       const board = Array(9).fill(null);
-      expect(checkWinner(board)).toBeNull();
+      expect(checkWinner(board, 3)).toBeNull();
+    });
+
+    it("should correctly identify winner on a 4x4 board", () => {
+      const board = [
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        null,
+        PlayerEnum.X,
+        null,
+        null,
+        null,
+        null,
+        PlayerEnum.X,
+        null,
+        null,
+        null,
+        null,
+        PlayerEnum.X,
+      ];
+      expect(checkWinner(board, 4)).toBe(PlayerEnum.X);
+    });
+
+    it("should correctly identify winner on a 5x5 board", () => {
+      const board = [
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        null,
+        PlayerEnum.X,
+        null,
+        null,
+        null,
+        null,
+        null,
+        PlayerEnum.X,
+        null,
+        null,
+        null,
+        null,
+        null,
+        PlayerEnum.X,
+        null,
+        null,
+        null,
+        null,
+        null,
+        PlayerEnum.X,
+      ];
+      expect(checkWinner(board, 5)).toBe(PlayerEnum.X);
+    });
+
+    it("should return null if there is no winner on a 5x5 board", () => {
+      const board = [
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.X,
+        PlayerEnum.X,
+        PlayerEnum.O,
+      ];
+      expect(checkWinner(board, 5)).toBeNull();
     });
   });
 
   describe("evaluateBoard", () => {
-    it("should return 10 if X wins", () => {
+    it("should return 10 if X wins on a 3x3 board", () => {
       const board = [
         PlayerEnum.X,
         PlayerEnum.X,
@@ -95,10 +179,10 @@ describe("Tic-Tac-Toe AI Functions", () => {
         null,
         null,
       ];
-      expect(evaluateBoard(board)).toBe(10);
+      expect(evaluateBoard(board, 3)).toBe(10);
     });
 
-    it("should return -10 if O wins", () => {
+    it("should return -10 if O wins on a 3x3 board", () => {
       const board = [
         PlayerEnum.O,
         PlayerEnum.O,
@@ -110,10 +194,10 @@ describe("Tic-Tac-Toe AI Functions", () => {
         null,
         null,
       ];
-      expect(evaluateBoard(board)).toBe(-10);
+      expect(evaluateBoard(board, 3)).toBe(-10);
     });
 
-    it("should return 0 if there is no winner", () => {
+    it("should return 0 if there is no winner on a 3x3 board", () => {
       const board = [
         PlayerEnum.X,
         PlayerEnum.O,
@@ -125,12 +209,171 @@ describe("Tic-Tac-Toe AI Functions", () => {
         PlayerEnum.X,
         PlayerEnum.O,
       ];
-      expect(evaluateBoard(board)).toBe(0);
+      expect(evaluateBoard(board, 3)).toBe(0);
+    });
+
+    it("should return 10 if X wins on a 4x4 board", () => {
+      const board = [
+        PlayerEnum.X,
+        PlayerEnum.X,
+        PlayerEnum.X,
+        PlayerEnum.X,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+      ];
+      expect(evaluateBoard(board, 4)).toBe(10);
+    });
+
+    it("should return -10 if O wins on a 4x4 board", () => {
+      const board = [
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+      ];
+      expect(evaluateBoard(board, 4)).toBe(-10);
+    });
+
+    it("should return 0 if there is no winner on a 4x4 board", () => {
+      const board = [
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+      ];
+      expect(evaluateBoard(board, 4)).toBe(0);
+    });
+
+    it("should return 10 if X wins on a 5x5 board", () => {
+      const board = [
+        PlayerEnum.X,
+        PlayerEnum.X,
+        PlayerEnum.X,
+        PlayerEnum.X,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+      ];
+      expect(evaluateBoard(board, 5)).toBe(10);
+    });
+
+    it("should return -10 if O wins on a 5x5 board", () => {
+      const board = [
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+      ];
+      expect(evaluateBoard(board, 5)).toBe(-10);
+    });
+
+    it("should return 0 if there is no winner on a 5x5 board", () => {
+      const board = [
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.X,
+        PlayerEnum.X,
+        PlayerEnum.O,
+      ];
+      expect(evaluateBoard(board, 5)).toBe(0);
     });
   });
 
   describe("minimax", () => {
-    it("should return 10 for a winning board for X", () => {
+    it("should return 10 for a winning board for X on a 3x3 board", () => {
       const board = [
         PlayerEnum.X,
         PlayerEnum.X,
@@ -142,10 +385,12 @@ describe("Tic-Tac-Toe AI Functions", () => {
         null,
         null,
       ];
-      expect(minimax(board, 0, true)).toBe(10);
+      expect(minimax(board, PlayerEnum.X, 0, -Infinity, Infinity, 3, 3)).toBe(
+        10,
+      );
     });
 
-    it("should return -10 for a winning board for O", () => {
+    it("should return -10 for a winning board for O on a 3x3 board", () => {
       const board = [
         PlayerEnum.O,
         PlayerEnum.O,
@@ -157,10 +402,12 @@ describe("Tic-Tac-Toe AI Functions", () => {
         null,
         null,
       ];
-      expect(minimax(board, 0, false)).toBe(-10);
+      expect(minimax(board, PlayerEnum.O, 0, -Infinity, Infinity, 3, 3)).toBe(
+        -10,
+      );
     });
 
-    it("should return 0 for a draw", () => {
+    it("should return 0 for a draw on a 3x3 board", () => {
       const board = [
         PlayerEnum.X,
         PlayerEnum.O,
@@ -172,12 +419,185 @@ describe("Tic-Tac-Toe AI Functions", () => {
         PlayerEnum.X,
         PlayerEnum.O,
       ];
-      expect(minimax(board, 0, true)).toBe(0);
+      expect(minimax(board, PlayerEnum.X, 0, -Infinity, Infinity, 3, 3)).toBe(
+        0,
+      );
+    });
+
+    it("should return 10 for a winning board for X on a 4x4 board", () => {
+      const board = [
+        PlayerEnum.X,
+        PlayerEnum.X,
+        PlayerEnum.X,
+        PlayerEnum.X,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+      ];
+      expect(minimax(board, PlayerEnum.X, 0, -Infinity, Infinity, 4, 4)).toBe(
+        10,
+      );
+    });
+
+    it("should return -10 for a winning board for O on a 4x4 board", () => {
+      const board = [
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+      ];
+      expect(minimax(board, PlayerEnum.O, 0, -Infinity, Infinity, 4, 4)).toBe(
+        -10,
+      );
+    });
+
+    it("should return 0 for a draw on a 4x4 board", () => {
+      const board = [
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+      ];
+      expect(minimax(board, PlayerEnum.X, 0, -Infinity, Infinity, 4, 4)).toBe(
+        0,
+      );
+    });
+
+    it("should return 10 for a winning board for X on a 5x5 board", () => {
+      const board = [
+        PlayerEnum.X,
+        PlayerEnum.X,
+        PlayerEnum.X,
+        PlayerEnum.X,
+        PlayerEnum.X,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+      ];
+      expect(minimax(board, PlayerEnum.X, 0, -Infinity, Infinity, 5, 5)).toBe(
+        10,
+      );
+    });
+
+    it("should return -10 for a winning board for O on a 5x5 board", () => {
+      const board = [
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+      ];
+      expect(minimax(board, PlayerEnum.O, 0, -Infinity, Infinity, 5, 5)).toBe(
+        -10,
+      );
+    });
+
+    it("should return 0 for a draw on a 5x5 board", () => {
+      const board = [
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.O,
+        PlayerEnum.O,
+        PlayerEnum.X,
+        PlayerEnum.X,
+        PlayerEnum.X,
+        PlayerEnum.O,
+      ];
+      expect(minimax(board, PlayerEnum.X, 0, -Infinity, Infinity, 5, 5)).toBe(
+        0,
+      );
     });
   });
 
   describe("findBestMove", () => {
-    it("should return the best move for X to win", () => {
+    it("should return the best move for X to win on a 3x3 board", () => {
       const board = [
         PlayerEnum.X,
         PlayerEnum.O,
@@ -189,10 +609,10 @@ describe("Tic-Tac-Toe AI Functions", () => {
         null,
         null,
       ];
-      expect(findBestMove(board)).toBe(5);
+      expect(findBestMove(board, 3)).toBe(5);
     });
 
-    it("should return the best move for X to block O from winning", () => {
+    it("should return the best move to block O from winning on a 3x3 board", () => {
       const board = [
         PlayerEnum.X,
         PlayerEnum.O,
@@ -208,12 +628,22 @@ describe("Tic-Tac-Toe AI Functions", () => {
       // test here returns 5, but the best move in this scenario can be both 5 and 6,
       // because that is the most optimal move here (blocking two possible winnings by X)
       // findBestMove always chooses 5 over 6 here, as far as I manually tested it.
-      expect(findBestMove(board)).toBe(5);
+      expect(findBestMove(board, 3)).toBe(5);
     });
 
-    it("should return the best move for an empty board", () => {
+    it("should return the best move for an empty board on a 3x3 board", () => {
       const board = Array(9).fill(null);
-      expect(findBestMove(board)).toBe(0);
+      expect(findBestMove(board, 3)).toBe(0);
+    });
+
+    it("should return the best move for an empty board on a 4x4 board", () => {
+      const board = Array(16).fill(null);
+      expect(findBestMove(board, 4)).toBe(0);
+    });
+
+    it("should return the best move for an empty board on a 5x5 board", () => {
+      const board = Array(25).fill(null);
+      expect(findBestMove(board, 5)).toBe(0);
     });
   });
 });

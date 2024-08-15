@@ -1,1 +1,3 @@
-export type Board = (string | null)[];
+import { PlayerEnum } from "@/enums";
+
+export type Board = (PlayerEnum | null)[];

@@ -19,19 +19,6 @@ const mockUseMachine = useMachine as jest.Mock;
 
 beforeEach(() => {
   jest.clearAllMocks();
-  mockUseMachine.mockReturnValue([
-    {
-      matches: jest.fn((state: string) => state === "modeSelection"),
-      value: "modeSelection",
-      context: {
-        board: Array(9).fill(null),
-        currentPlayer: PlayerEnum.X,
-        winner: null,
-        mode: GameModeEnum.Player,
-      },
-    },
-    mockSend,
-  ]);
 });
 
 describe("Game Component", () => {
@@ -53,18 +40,38 @@ describe("Game Component", () => {
     render(<Game />);
     expect(screen.getByText("Play with a Friend")).toBeInTheDocument();
     expect(screen.getByText("Play against AI")).toBeInTheDocument();
+    expect(screen.getByLabelText("3x3")).toBeInTheDocument();
+    expect(screen.getByLabelText("4x4")).toBeInTheDocument();
+    expect(screen.getByLabelText("5x5")).toBeInTheDocument();
   });
 
-  test("calls handleSelectMode with the correct mode when a mode is selected", () => {
+  test("calls handleSelectModeAndSize with correct mode and size", () => {
+    mockUseMachine.mockReturnValue([
+      {
+        matches: jest.fn((state: string) => state === "modeSelection"),
+        value: "modeSelection",
+        context: {
+          board: Array(9).fill(null),
+          currentPlayer: PlayerEnum.X,
+          winner: null,
+          mode: GameModeEnum.Player,
+        },
+      },
+      mockSend,
+    ]);
+
     render(<Game />);
-    fireEvent.click(screen.getByText("Play with a Friend"));
+    fireEvent.click(screen.getByLabelText("Play with a Friend"));
+    fireEvent.click(screen.getByLabelText("4x4"));
+    fireEvent.click(screen.getByText("Start Game"));
     expect(mockSend).toHaveBeenCalledWith({
-      type: GameEventEnum.SELECT_MODE,
+      type: GameEventEnum.SELECT_MODE_AND_SIZE,
       mode: GameModeEnum.Player,
+      size: 4,
     });
   });
 
-  test("renders Board, StatusText, and ResetButton when mode is selected", () => {
+  test("renders Board, StatusText, and Reset Button when not in modeSelection state", () => {
     mockUseMachine.mockReturnValue([
       {
         matches: jest.fn((state: string) => state === "playing"),
@@ -81,9 +88,6 @@ describe("Game Component", () => {
     expect(screen.getByText("Reset Game")).toBeInTheDocument();
     expect(
       screen.getByText(`Player ${PlayerEnum.X}'s turn`),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /Reset Game/i }),
     ).toBeInTheDocument();
   });
 
@@ -180,14 +184,9 @@ describe("Game Component", () => {
     ]);
 
     render(<Game />);
-    expect(
-      screen.getByText((content, element) => content.includes("Reset Game")),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByText(`Player ${PlayerEnum.X}'s turn`),
-    ).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: /Reset Game/i }),
-    ).toBeInTheDocument();
+    fireEvent.click(screen.getByText("Reset Game"));
+    expect(mockSend).toHaveBeenCalledWith({
+      type: GameEventEnum.RESET,
+    });
   });
 });

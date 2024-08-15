@@ -15,6 +15,7 @@ interface GameContext {
   event: GameEvent | null;
   mode: GameModeEnum.Player | GameModeEnum.AI;
   winner: string | null;
+  boardSize: number;
   context: GameContext; // recursive type assign for test reasons (due to insufficient implementation of XState)
 }
 
@@ -27,12 +28,13 @@ const gameMachineConfig = {
     winner: null,
     event: null,
     mode: GameModeEnum.Player,
+    boardSize: 3,
   },
   states: {
     modeSelection: {
       on: {
-        SELECT_MODE: {
-          actions: ActionsEnum.SET_MODE,
+        SELECT_MODE_AND_SIZE: {
+          actions: ActionsEnum.SET_MODE_AND_SIZE,
           target: StatesEnum.PLAYING,
         },
       },
@@ -91,14 +93,17 @@ const gameMachineConfig = {
 
 const gameMachineOptions = {
   actions: {
-    setMode: assign((context: GameContext) => {
-      if (context.event?.type === GameEventEnum.SELECT_MODE) {
+    setModeAndSize: assign((context: GameContext) => {
+      if (context.event?.type === GameEventEnum.SELECT_MODE_AND_SIZE) {
+        const boardSize = context.event.size;
         return {
           ...context["context"],
-          mode: context.event["mode"],
+          mode: context.event.mode,
+          boardSize: boardSize,
+          board: Array(boardSize * boardSize).fill(null),
         };
       }
-      return {};
+      return context["context"];
     }),
     makeMove: assign((context: GameContext) => {
       if (context.event?.type === GameEventEnum.MAKE_MOVE) {
@@ -120,11 +125,12 @@ const gameMachineOptions = {
       return context["context"];
     }),
     aiMove: assign((context: GameContext) => {
-      const bestMove = findBestMove(context["context"].board);
+      const { board, boardSize } = context["context"];
+      const bestMove = findBestMove(board, boardSize);
       const newBoard = [...context["context"].board];
       newBoard[bestMove] = PlayerEnum.O;
 
-      const winner = checkWinner(newBoard);
+      const winner = checkWinner(newBoard, boardSize);
 
       return {
         ...context["context"],
@@ -133,8 +139,10 @@ const gameMachineOptions = {
         winner: winner,
       };
     }),
-    resetGame: assign(() => ({
-      board: Array(9).fill(null),
+    resetGame: assign((context: GameContext) => ({
+      board: Array(
+        context["context"].boardSize * context["context"].boardSize,
+      ).fill(null),
       winner: null,
       currentPlayer: PlayerEnum.X,
       mode: GameModeEnum.Player,
@@ -142,7 +150,8 @@ const gameMachineOptions = {
   },
   guards: {
     isWinner: (context: GameContext) =>
-      checkWinner(context["context"].board) !== null,
+      checkWinner(context["context"].board, context["context"].boardSize) !==
+      null,
     isDraw: (context: GameContext) =>
       context["context"].board.every((cell: string | null) => cell !== null),
     isAiMode: (context: GameContext) =>

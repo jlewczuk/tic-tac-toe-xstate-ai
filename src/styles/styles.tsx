@@ -38,10 +38,13 @@ export const GameContainer = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 `;
 
-export const BoardContainer = styled.div`
+interface BoardContainerProps {
+  boardSize: number;
+}
+
+export const BoardContainer = styled.div<BoardContainerProps>`
   display: grid;
-  grid-template-columns: repeat(3, 100px);
-  grid-template-rows: repeat(3, 100px);
+  grid-template-columns: ${({ boardSize }) => `repeat(${boardSize}, 1fr)`};
   gap: 10px;
 `;
 
@@ -80,29 +83,14 @@ export const SquareButton = styled.button<{
   }
 `;
 
-export const StatusText = styled.p`
-  margin-top: 20px;
+export const StatusText = styled.span`
+  margin-top: 30px;
+  margin-bottom: 10px;
   font-size: 1.5rem;
   color: #333;
 `;
 
-export const ResetButton = styled.button`
-  margin-top: 20px;
-  padding: 10px 20px;
-  font-size: 1rem;
-  color: #fff;
-  background-color: #007bff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #0056b3;
-  }
-`;
-
-export const ModeButton = styled.button`
+export const Button = styled.button`
   margin: 10px;
   padding: 15px 30px;
   font-size: 1.2rem;
@@ -116,4 +104,48 @@ export const ModeButton = styled.button`
   &:hover {
     background-color: #0056b3;
   }
+`;
+
+export const RadioButton = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+
+  input[type="radio"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #007bff;
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+    &:checked {
+      background-color: #007bff;
+      border: 2px solid #0056b3;
+    }
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+    }
+  }
+`;
+
+export const RadioLabel = styled.label`
+  font-size: 1rem;
+  color: #333;
+  margin-left: 10px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: #007bff;
+  }
+`;
+
+export const SeparatorLine = styled.hr`
+  width: 100%;
+  border: 1px solid #ccc;
+  margin: 20px 0;
 `;

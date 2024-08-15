@@ -1,83 +1,147 @@
-import { Board, Player } from "@/types";
 import { PlayerEnum } from "@/enums";
+import { Board } from "@/types";
 
-export const getAvailableMoves = (board: Board): number[] => {
-  return board
-    .map((value, index) => (value === null ? index : null))
-    .filter((val) => val !== null) as number[];
-};
-
-export const checkWinner = (board: Board): Player | null => {
-  const winningCombos = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-
-  for (let [a, b, c] of winningCombos) {
-    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-      return board[a] as Player;
+export const getAvailableMoves = (board: (PlayerEnum | null)[]): number[] => {
+  const moves = [];
+  for (let i = 0; i < board.length; i++) {
+    if (board[i] === null) {
+      moves.push(i);
     }
   }
+  return moves;
+};
+
+export const checkWinner = (
+  board: (PlayerEnum | null)[],
+  boardSize: number,
+): PlayerEnum | null => {
+  const checkLine = (line: (PlayerEnum | null)[]) => {
+    if (line.every((cell) => cell === PlayerEnum.X)) return PlayerEnum.X;
+    if (line.every((cell) => cell === PlayerEnum.O)) return PlayerEnum.O;
+    return null;
+  };
+
+  for (let row = 0; row < boardSize; row++) {
+    const rowCells = board.slice(row * boardSize, (row + 1) * boardSize);
+    const winner = checkLine(rowCells);
+    if (winner) return winner;
+  }
+
+  for (let col = 0; col < boardSize; col++) {
+    const colCells = [];
+    for (let row = 0; row < boardSize; row++) {
+      colCells.push(board[row * boardSize + col]);
+    }
+    const winner = checkLine(colCells);
+    if (winner) return winner;
+  }
+
+  const mainDiagonal = [];
+  const antiDiagonal = [];
+  for (let i = 0; i < boardSize; i++) {
+    mainDiagonal.push(board[i * boardSize + i]);
+    antiDiagonal.push(board[(i + 1) * boardSize - (i + 1)]);
+  }
+  let winner = checkLine(mainDiagonal);
+  if (winner) return winner;
+  winner = checkLine(antiDiagonal);
+  if (winner) return winner;
 
   return null;
 };
 
-export const evaluateBoard = (board: Board): number => {
-  const winner = checkWinner(board);
+export const evaluateBoard = (board: Board, boardSize: number): number => {
+  const winner = checkWinner(board, boardSize);
   if (winner === PlayerEnum.X) return 10;
   if (winner === PlayerEnum.O) return -10;
   return 0;
 };
 
 export const minimax = (
-  board: Board,
-  depth: number,
-  isMaximizing: boolean,
+  newBoard: (PlayerEnum | null)[],
+  player: PlayerEnum,
+  depth = 0,
+  alpha = -Infinity,
+  beta = Infinity,
+  boardSize: number,
+  maxDepth: number,
 ): number => {
-  const score = evaluateBoard(board);
+  const score = evaluateBoard(newBoard, boardSize);
+
   if (score === 10) return score - depth;
   if (score === -10) return score + depth;
-  if (getAvailableMoves(board).length === 0) return 0;
+  if (depth >= maxDepth || getAvailableMoves(newBoard).length === 0) return 0;
 
-  if (isMaximizing) {
-    let best = -Infinity;
-    for (let move of getAvailableMoves(board)) {
-      board[move] = PlayerEnum.X;
-      best = Math.max(best, minimax(board, depth + 1, !isMaximizing));
-      board[move] = null;
+  if (player === PlayerEnum.X) {
+    let bestScore = -Infinity;
+    for (let i = 0; i < newBoard.length; i++) {
+      if (newBoard[i] === null) {
+        newBoard[i] = player;
+        const currentScore = minimax(
+          newBoard,
+          PlayerEnum.O,
+          depth + 1,
+          alpha,
+          beta,
+          boardSize,
+          maxDepth,
+        );
+        newBoard[i] = null;
+        bestScore = Math.max(bestScore, currentScore);
+        alpha = Math.max(alpha, bestScore);
+        if (beta <= alpha) break;
+      }
     }
-    return best;
+    return bestScore;
   } else {
-    let best = Infinity;
-    for (let move of getAvailableMoves(board)) {
-      board[move] = PlayerEnum.O;
-      best = Math.min(best, minimax(board, depth + 1, !isMaximizing));
-      board[move] = null;
+    let bestScore = Infinity;
+    for (let i = 0; i < newBoard.length; i++) {
+      if (newBoard[i] === null) {
+        newBoard[i] = player;
+        const currentScore = minimax(
+          newBoard,
+          PlayerEnum.X,
+          depth + 1,
+          alpha,
+          beta,
+          boardSize,
+          maxDepth,
+        );
+        newBoard[i] = null;
+        bestScore = Math.min(bestScore, currentScore);
+        beta = Math.min(beta, bestScore);
+        if (beta <= alpha) break;
+      }
     }
-    return best;
+    return bestScore;
   }
 };
 
-export const findBestMove = (board: Board): number => {
-  let bestValue = -Infinity;
-  let bestMove = -1;
+export const findBestMove = (
+  board: (PlayerEnum | null)[],
+  boardSize: number,
+): number => {
+  const maxDepth = 3;
+  const availableSpots = getAvailableMoves(board);
 
-  for (let move of getAvailableMoves(board)) {
-    board[move] = PlayerEnum.X;
-    const moveValue = minimax(board, 0, false);
-    board[move] = null;
+  const bestMove = availableSpots.reduce(
+    (best, spot) => {
+      const newBoard = [...board];
+      newBoard[spot] = PlayerEnum.O;
 
-    if (moveValue > bestValue) {
-      bestMove = move;
-      bestValue = moveValue;
-    }
-  }
+      const score = minimax(
+        newBoard,
+        PlayerEnum.X,
+        0,
+        -Infinity,
+        Infinity,
+        boardSize,
+        maxDepth,
+      );
+      return score < best.score ? { index: spot, score } : best;
+    },
+    { index: -1, score: Infinity },
+  );
 
-  return bestMove;
+  return bestMove.index;
 };
