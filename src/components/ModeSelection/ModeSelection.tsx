@@ -9,9 +9,7 @@ interface ModeSelectionProps {
   onSelectModeAndSize: (mode: GameModeEnum, size: number) => void;
 }
 
-export const ModeSelection: React.FC<ModeSelectionProps> = ({
-  onSelectModeAndSize,
-}) => {
+export const ModeSelection = ({ onSelectModeAndSize }: ModeSelectionProps) => {
   const [selectedMode, setSelectedMode] = useState<GameModeEnum>(
     GameModeEnum.Player,
   );
