@@ -1,4 +1,5 @@
 import { EventObject } from "xstate";
+
 import { GameEventEnum, GameModeEnum } from "@/enums";
 
 export type GameEvent =

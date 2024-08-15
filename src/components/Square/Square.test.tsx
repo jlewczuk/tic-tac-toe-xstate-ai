@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+
+import { Square } from "./Square";
+
 import { PlayerEnum } from "@/enums";
-import Square from "./Square";
 import "@testing-library/jest-dom";
 
 describe("Square Component", () => {

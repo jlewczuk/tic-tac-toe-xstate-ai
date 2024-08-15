@@ -1,6 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { useMachine } from "@xstate/react";
+
 import { Game } from "./Game";
+
 import { GameEventEnum, GameModeEnum, PlayerEnum } from "@/enums";
 import "@testing-library/jest-dom";
 
@@ -12,7 +14,11 @@ jest.mock("../../hooks/useWindowSize/useWindowSize", () => ({
   useWindowSize: jest.fn(() => ({ width: 1000, height: 1000 })),
 }));
 
-jest.mock("react-confetti", () => () => <div>Confetti</div>);
+jest.mock("react-confetti", () => {
+  const MockConfetti = () => <div>Confetti</div>;
+  MockConfetti.displayName = "MockConfetti";
+  return MockConfetti;
+});
 
 const mockSend = jest.fn();
 const mockUseMachine = useMachine as jest.Mock;

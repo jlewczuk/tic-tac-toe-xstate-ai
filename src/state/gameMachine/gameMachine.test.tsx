@@ -1,9 +1,10 @@
 import { interpret } from "xstate";
-import { gameMachine } from "./gameMachine";
-import * as minimaxHelpers from "@/helpers/minimax";
-import { GameEventEnum, GameModeEnum, PlayerEnum, StatesEnum } from "@/enums";
 
-jest.mock("@/helpers/minimax");
+import { GameEventEnum, GameModeEnum, PlayerEnum, StatesEnum } from "@/enums";
+import * as minimaxHelpers from "@/helpers/minimax/minimax";
+import { gameMachine } from "@/state";
+
+jest.mock("@/helpers/minimax/minimax");
 
 describe("gameMachine", () => {
   let service: any; // ;)

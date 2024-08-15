@@ -1,11 +1,11 @@
-import React from "react";
 import { useMachine } from "@xstate/react";
-import { useWindowSize } from "@/hooks/useWindowSize/useWindowSize";
+import React from "react";
 import Confetti from "react-confetti";
-import { ModeSelection } from "../ModeSelection/ModeSelection";
+
+import { Board, ModeSelection } from "@/components";
 import { GameEventEnum, GameModeEnum, PlayerEnum } from "@/enums";
-import { Board } from "../Board/Board";
-import { gameMachine } from "@/state/gameMachine";
+import { useWindowSize } from "@/hooks";
+import { gameMachine } from "@/state";
 import {
   Button,
   GameContainer,

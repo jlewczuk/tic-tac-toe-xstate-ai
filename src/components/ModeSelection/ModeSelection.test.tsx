@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { ModeSelection } from "./ModeSelection";
+
+import { ModeSelection } from "@/components";
 import { GameModeEnum } from "@/enums";
 import "@testing-library/jest-dom";
 
@@ -12,8 +13,8 @@ describe("ModeSelection Component", () => {
 
   test("renders mode selection options correctly", () => {
     render(<ModeSelection onSelectModeAndSize={mockOnSelectModeAndSize} />);
-    expect(screen.getByText("Play with a Friend")).toBeInTheDocument();
-    expect(screen.getByText("Play against AI")).toBeInTheDocument();
+    expect(screen.getByLabelText("Play with a Friend")).toBeInTheDocument();
+    expect(screen.getByLabelText("Play against AI")).toBeInTheDocument();
   });
 
   test("renders board size options correctly", () => {

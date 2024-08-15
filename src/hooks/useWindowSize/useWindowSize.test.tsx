@@ -1,6 +1,7 @@
 import { act, render } from "@testing-library/react";
-import { useWindowSize } from "@/hooks";
 import React from "react";
+
+import { useWindowSize } from "@/hooks";
 
 const TestComponent = () => {
   const { width, height } = useWindowSize();

@@ -1,3 +1,3 @@
-import { PlayerEnum } from "../enums";
+import { PlayerEnum } from "@/enums";
 
 export type Player = PlayerEnum.X | PlayerEnum.O;

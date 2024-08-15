@@ -4,7 +4,6 @@ export { GameMode } from "./gameMode.type";
 export {
   GameEvent,
   MakeMoveEvent,
-  SelectModeEvent,
   AiMoveEvent,
   CheckWinnerEvent,
   ResetEvent,

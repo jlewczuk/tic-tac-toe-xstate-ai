@@ -1,6 +1,5 @@
 import { assign, createMachine } from "xstate";
-import { checkWinner, findBestMove } from "@/helpers/minimax";
-import { Board, GameEvent, Player } from "@/types";
+
 import {
   ActionsEnum,
   GameEventEnum,
@@ -8,6 +7,8 @@ import {
   PlayerEnum,
   StatesEnum,
 } from "@/enums";
+import { checkWinner, findBestMove } from "@/helpers/minimax/minimax";
+import { Board, GameEvent, Player } from "@/types";
 
 interface GameContext {
   board: Board;

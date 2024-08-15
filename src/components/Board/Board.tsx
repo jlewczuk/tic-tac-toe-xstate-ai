@@ -1,8 +1,9 @@
 import React from "react";
-import Square from "../Square/Square";
-import { BoardContainer } from "@/styles/styles";
-import { PlayerEnum } from "@/enums";
 import { StateValue } from "xstate";
+
+import { Square } from "@/components";
+import { PlayerEnum } from "@/enums";
+import { BoardContainer } from "@/styles/styles";
 
 interface BoardProps {
   squares: (PlayerEnum | null)[];

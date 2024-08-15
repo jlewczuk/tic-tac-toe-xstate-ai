@@ -1,17 +1,21 @@
 import js from "@eslint/js";
-import globals from "globals";
+import typescriptEslintPlugin from "@typescript-eslint/eslint-plugin";
+import typescriptEslintParser from "@typescript-eslint/parser";
+import importPlugin from "eslint-plugin-import";
+import jest from "eslint-plugin-jest";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import reactRefresh from "eslint-plugin-react-refresh";
-import jest from "eslint-plugin-jest";
+import globals from "globals";
 
 export default [
   {
-    files: ["**/*.{js,jsx}"],
+    files: ["**/*.{js,jsx,ts,tsx}"],
     ignores: ["dist"],
     languageOptions: {
       ecmaVersion: 2020,
       globals: { ...globals.browser, ...globals.jest },
+      parser: typescriptEslintParser,
       parserOptions: {
         ecmaVersion: "latest",
         ecmaFeatures: { jsx: true },
@@ -24,6 +28,8 @@ export default [
       "react-hooks": reactHooks,
       "react-refresh": reactRefresh,
       jest,
+      import: importPlugin,
+      "@typescript-eslint": typescriptEslintPlugin,
     },
     rules: {
       ...js.configs.recommended.rules,
@@ -34,6 +40,28 @@ export default [
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },
+      ],
+      "import/order": [
+        "error",
+        {
+          groups: [
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index",
+            "object",
+            "type",
+          ],
+          "newlines-between": "always",
+          alphabetize: { order: "asc", caseInsensitive: true },
+        },
+      ],
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_" },
       ],
     },
   },
